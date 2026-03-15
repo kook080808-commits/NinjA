@@ -2,248 +2,212 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>3D Ninja Jang</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            overflow: hidden;
-            font-family: 'Arial Black', sans-serif;
-            background: #000;
-        }
-        
-        canvas {
-            display: block;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; font-family: 'Arial Black', sans-serif; background: #000; }
+        canvas { display: block; }
+
         #mainMenu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, rgba(10,10,30,0.95) 0%, rgba(20,20,50,0.95) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
         }
-        
         #mainMenu h1 {
-            font-size: 84px;
-            color: #fff;
-            text-shadow: 0 0 30px #ff0000, 0 0 50px #ff0000, 0 0 70px #ff0000;
-            margin-bottom: 20px;
-            animation: glow 2s ease-in-out infinite;
-            letter-spacing: 4px;
+            font-size: 60px; color: #fff;
+            text-shadow: 0 0 30px #ff0000, 0 0 50px #ff0000;
+            margin-bottom: 20px; animation: glow 2s ease-in-out infinite; letter-spacing: 4px;
         }
-        
-        #mainMenu h2 {
-            font-size: 36px;
-            color: #ffff00;
-            text-shadow: 3px 3px 10px #000;
-            margin-bottom: 60px;
-        }
-        
+        #mainMenu h2 { font-size: 28px; color: #ffff00; text-shadow: 3px 3px 10px #000; margin-bottom: 40px; }
         @keyframes glow {
-            0%, 100% { 
-                text-shadow: 0 0 30px #ff0000, 0 0 50px #ff0000, 0 0 70px #ff0000;
-                transform: scale(1);
-            }
-            50% { 
-                text-shadow: 0 0 40px #ff0000, 0 0 70px #ff0000, 0 0 100px #ff0000;
-                transform: scale(1.05);
-            }
+            0%,100% { text-shadow: 0 0 30px #ff0000,0 0 50px #ff0000; transform: scale(1); }
+            50% { text-shadow: 0 0 40px #ff0000,0 0 70px #ff0000,0 0 100px #ff0000; transform: scale(1.05); }
         }
-        
         .menu-btn {
-            font-size: 32px;
-            padding: 25px 70px;
-            margin: 20px;
+            font-size: 24px; padding: 18px 50px; margin: 12px;
             background: linear-gradient(135deg, #ff0000, #cc0000);
-            color: #fff;
-            border: 4px solid #fff;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            text-shadow: 3px 3px 6px #000;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-            transition: all 0.3s;
-            text-transform: uppercase;
+            color: #fff; border: 3px solid #fff; border-radius: 15px;
+            cursor: pointer; font-weight: bold; text-shadow: 2px 2px 4px #000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.7); transition: all 0.3s; text-transform: uppercase;
         }
-        
-        .menu-btn:hover {
+        .menu-btn:hover, .menu-btn:active {
             background: linear-gradient(135deg, #ff3333, #ff0000);
-            transform: scale(1.15) translateY(-5px);
-            box-shadow: 0 0 30px #ff0000, 0 0 50px #ff0000;
+            transform: scale(1.1); box-shadow: 0 0 30px #ff0000;
         }
-        
-        .menu-info {
-            margin-top: 40px;
-            color: #aaa;
-            font-size: 18px;
+        .menu-info { margin-top: 30px; color: #aaa; font-size: 16px; text-align: center; line-height: 1.8; }
+
+        /* QOIDALAR MODAL */
+        #instructionsModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            display: none; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 3000; padding: 20px;
+        }
+        #instructionsModal.open { display: flex; }
+        .modal-box {
+            background: linear-gradient(160deg, #0d1a2e, #1a2a40);
+            border: 3px solid #ff3300;
+            border-radius: 20px;
+            padding: 30px 28px;
+            max-width: 420px; width: 100%;
+            box-shadow: 0 0 40px rgba(255,50,0,0.4);
             text-align: center;
-            line-height: 1.8;
         }
-        
-        #ui {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 30px;
-            display: none;
-            justify-content: space-between;
-            align-items: flex-start;
-            pointer-events: none;
+        .modal-box h2 {
+            font-size: 28px; color: #fff;
+            text-shadow: 0 0 15px #ff0000;
+            margin-bottom: 20px; letter-spacing: 2px;
         }
-        
-        .health-bar {
-            width: 420px;
+        .modal-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px; padding: 12px 16px;
+            margin-bottom: 12px; text-align: left;
         }
-        
-        .player-name {
-            color: #fff;
-            font-size: 24px;
-            margin-bottom: 12px;
-            text-shadow: 3px 3px 6px #000;
-            font-weight: bold;
+        .modal-section h3 {
+            color: #ffcc00; font-size: 15px;
+            margin-bottom: 8px; letter-spacing: 1px;
         }
-        
-        .health-container {
-            width: 100%;
-            height: 45px;
-            background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
-            border: 4px solid #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 2px 10px rgba(0,0,0,0.5);
-            position: relative;
+        .modal-row {
+            display: flex; align-items: center;
+            gap: 10px; margin: 6px 0; color: #ddd; font-size: 14px;
         }
-        
-        .health-fill {
-            height: 100%;
-            transition: width 0.3s;
-            background: linear-gradient(90deg, #ff0000, #ff6600, #ffaa00);
-            box-shadow: 0 0 10px rgba(255,100,0,0.8);
+        .modal-icon {
+            font-size: 20px; width: 28px; text-align: center; flex-shrink: 0;
         }
-        
-        .health-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            line-height: 45px;
-            color: #fff;
-            font-weight: bold;
-            font-size: 20px;
-            text-shadow: 2px 2px 4px #000;
-        }
-        
-        #timer {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 64px;
-            color: #fff;
-            text-shadow: 4px 4px 8px #000, 0 0 20px #ff0000;
-            font-weight: bold;
-            display: none;
-        }
-        
-        #controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            padding: 20px 40px;
-            border-radius: 15px;
-            color: #fff;
-            text-align: center;
-            border: 3px solid #444;
-            display: none;
-            box-shadow: 0 0 30px rgba(0,0,0,0.9);
-        }
-        
-        #pauseMenu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        
-        #pauseMenu h2 {
-            font-size: 64px;
-            color: #ffff00;
-            text-shadow: 0 0 20px #ff0000;
-            margin-bottom: 50px;
-        }
-        
-        .pause-btn {
-            font-size: 28px;
-            padding: 20px 60px;
-            margin: 15px;
-            background: linear-gradient(135deg, #444, #222);
-            color: #fff;
-            border: 3px solid #666;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .pause-btn:hover {
-            background: linear-gradient(135deg, #666, #444);
-            transform: scale(1.1);
-            border-color: #fff;
-        }
-        
-        .control-row {
-            margin: 8px 0;
-            font-size: 16px;
-        }
-        
-        .key {
+        .modal-key {
             display: inline-block;
-            background: linear-gradient(180deg, #444, #222);
-            padding: 5px 12px;
-            border-radius: 5px;
-            margin: 0 4px;
-            border: 2px solid #666;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: #333; border: 2px solid #555;
+            border-radius: 6px; padding: 2px 8px;
+            font-size: 12px; font-weight: bold; color: #fff;
+            font-family: monospace; margin-right: 4px;
         }
-        
+        .modal-close {
+            margin-top: 20px; font-size: 20px;
+            padding: 14px 50px;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            color: #fff; border: 3px solid #fff;
+            border-radius: 12px; cursor: pointer;
+            font-weight: bold; transition: all 0.2s;
+        }
+        .modal-close:active { transform: scale(0.95); }
+
+        #ui {
+            position: absolute; top: 0; left: 0; width: 100%;
+            padding: 15px 20px; display: none;
+            justify-content: space-between; align-items: flex-start; pointer-events: none;
+        }
+        .health-bar { width: 42%; }
+        .player-name { color: #fff; font-size: 16px; margin-bottom: 8px; text-shadow: 2px 2px 4px #000; font-weight: bold; }
+        .health-container {
+            width: 100%; height: 30px;
+            background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+            border: 3px solid #fff; border-radius: 6px; overflow: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8); position: relative;
+        }
+        .health-fill {
+            height: 100%; transition: width 0.3s;
+            background: linear-gradient(90deg, #ff0000, #ff6600, #ffaa00);
+            box-shadow: 0 0 8px rgba(255,100,0,0.8);
+        }
+        .health-text {
+            position: absolute; width: 100%; text-align: center;
+            line-height: 30px; color: #fff; font-weight: bold;
+            font-size: 16px; text-shadow: 2px 2px 4px #000;
+        }
+        #timer {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            font-size: 48px; color: #fff; text-shadow: 4px 4px 8px #000, 0 0 20px #ff0000;
+            font-weight: bold; display: none;
+        }
         #round-display {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 96px;
-            color: #ffff00;
+            font-size: 72px; color: #ffff00;
             text-shadow: 5px 5px 15px #000, 0 0 30px #ff0000;
-            font-weight: bold;
-            display: none;
-            animation: fadeInOut 2s;
-            text-transform: uppercase;
+            font-weight: bold; display: none; animation: fadeInOut 2s;
+            text-transform: uppercase; text-align: center; z-index: 100;
         }
-        
         @keyframes fadeInOut {
-            0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            0%,100% { opacity: 0; transform: translate(-50%,-50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
+        }
+        #pauseMenu {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none;
+            flex-direction: column; justify-content: center; align-items: center; z-index: 2000;
+        }
+        #pauseMenu h2 { font-size: 48px; color: #ffff00; text-shadow: 0 0 20px #ff0000; margin-bottom: 40px; }
+        .pause-btn {
+            font-size: 22px; padding: 16px 50px; margin: 12px;
+            background: linear-gradient(135deg, #444, #222);
+            color: #fff; border: 3px solid #666; border-radius: 10px;
+            cursor: pointer; font-weight: bold; transition: all 0.3s;
+        }
+        .pause-btn:hover, .pause-btn:active { background: linear-gradient(135deg, #666, #444); transform: scale(1.1); border-color: #fff; }
+
+        /* ===== JOYSTICK ===== */
+        #joystick-zone {
+            position: fixed; bottom: 20px; left: 20px;
+            width: 140px; height: 140px; z-index: 500;
+            display: none;
+        }
+        #joystick-base {
+            width: 140px; height: 140px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 3px solid rgba(255,255,255,0.25);
+            position: absolute; top: 0; left: 0;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        #joystick-knob {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.4), rgba(255,80,80,0.7));
+            border: 3px solid rgba(255,255,255,0.5);
+            position: absolute; top: 40px; left: 40px;
+            box-shadow: 0 0 15px rgba(255,50,50,0.6);
+            pointer-events: none;
+            transition: box-shadow 0.1s;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        #action-btns {
+            position: fixed; bottom: 20px; right: 15px;
+            display: none; z-index: 500;
+            width: 160px; height: 160px;
+        }
+        .abtn {
+            position: absolute;
+            width: 62px; height: 62px; border-radius: 50%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-size: 20px; font-weight: bold; color: #fff;
+            border: 3px solid rgba(255,255,255,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            user-select: none; -webkit-user-select: none;
+            touch-action: manipulation; cursor: pointer;
+            transition: transform 0.08s, box-shadow 0.08s;
+        }
+        .abtn small { font-size: 9px; margin-top: 2px; line-height: 1; }
+        .abtn:active, .abtn.pressed {
+            transform: scale(0.88);
+            box-shadow: 0 0 20px currentColor;
+        }
+        /* Diamond layout */
+        #btn-punch { top: 0;   right: 50px; background: radial-gradient(circle, #cc2200, #880000); color: #ffaaaa; }
+        #btn-kick  { top: 50px; right: 0;   background: radial-gradient(circle, #cc6600, #883300); color: #ffcc88; }
+        #btn-grab  { top: 50px; right: 100px; background: radial-gradient(circle, #660099, #330066); color: #cc88ff; }
+        #btn-block { top: 100px; right: 50px; background: radial-gradient(circle, #004499, #002266); color: #88aaff; }
+
+        /* ===== PAUSE BUTTON ===== */
+        #pause-btn {
+            position: fixed; top: 70px; left: 50%;
+            transform: translateX(-50%);
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.3);
+            color: #fff; font-size: 18px; cursor: pointer;
+            display: none; align-items: center; justify-content: center;
+            z-index: 500; pointer-events: all;
         }
     </style>
 </head>
@@ -258,48 +222,80 @@
             <p>Ninja shahri fonida epic jang!</p>
         </div>
     </div>
-    
+
     <div id="ui">
         <div class="health-bar">
             <div class="player-name">🤍 OQ NINJA (SIZ)</div>
             <div class="health-container">
-                <div class="health-fill" id="health1" style="width: 100%"></div>
+                <div class="health-fill" id="health1" style="width:100%"></div>
                 <div class="health-text" id="healthText1">100</div>
             </div>
         </div>
-        <div class="health-bar" style="text-align: right;">
+        <div class="health-bar" style="text-align:right;">
             <div class="player-name">🖤 QORA NINJA (BOT)</div>
             <div class="health-container">
-                <div class="health-fill" id="health2" style="width: 100%"></div>
+                <div class="health-fill" id="health2" style="width:100%"></div>
                 <div class="health-text" id="healthText2">100</div>
             </div>
         </div>
     </div>
-    
+
     <div id="timer">99</div>
     <div id="round-display">ROUND 1</div>
-    
+
+    <!-- QOIDALAR MODAL -->
+    <div id="instructionsModal">
+        <div class="modal-box">
+            <h2>🥷 NINJA JANG — QOIDALAR</h2>
+            <div class="modal-section">
+                <h3>📱 TELEFON BOSHQARUVI</h3>
+                <div class="modal-row"><span class="modal-icon">🕹️</span><span>Joystick — chapga/o'ngga harakat</span></div>
+                <div class="modal-row"><span class="modal-icon">⬆️</span><span>Joystick yuqori — sakrash</span></div>
+                <div class="modal-row"><span class="modal-icon">⬇️</span><span>Joystick pastga — cho'kish</span></div>
+                <div class="modal-row"><span class="modal-icon">👊</span><span>Musht — 5 zarar</span></div>
+                <div class="modal-row"><span class="modal-icon">🦶</span><span>Tepki — 8 zarar</span></div>
+                <div class="modal-row"><span class="modal-icon">🤜</span><span>Zahvat — 27 zarar!</span></div>
+                <div class="modal-row"><span class="modal-icon">🛡️</span><span>Blok — hujumni to'sish</span></div>
+            </div>
+            <div class="modal-section">
+                <h3>⌨️ KOMPYUTER BOSHQARUVI</h3>
+                <div class="modal-row"><span class="modal-icon">🚶</span><span><span class="modal-key">A</span><span class="modal-key">D</span> Harakat &nbsp;<span class="modal-key">W</span> Sakrash &nbsp;<span class="modal-key">S</span> Cho'kish</span></div>
+                <div class="modal-row"><span class="modal-icon">👊</span><span><span class="modal-key">J</span> Musht &nbsp;<span class="modal-key">K</span> Tepki &nbsp;<span class="modal-key">L</span> Zahvat &nbsp;<span class="modal-key">U</span> Blok</span></div>
+                <div class="modal-row"><span class="modal-icon">⏸️</span><span><span class="modal-key">ESC</span> Pauza</span></div>
+            </div>
+            <div class="modal-section">
+                <h3>🎯 MAQSAD</h3>
+                <div class="modal-row"><span class="modal-icon">⏰</span><span>99 soniya ichida botni mag'lub eting!</span></div>
+                <div class="modal-row"><span class="modal-icon">💡</span><span>Zahvat eng kuchli hujum!</span></div>
+                <div class="modal-row"><span class="modal-icon">🛡️</span><span>Blok zahvatdan himoya qilmaydi!</span></div>
+            </div>
+            <button class="modal-close" onclick="closeInstructions()">✅ TUSHUNARLI!</button>
+        </div>
+    </div>
+
     <div id="pauseMenu">
         <h2>⏸️ PAUZA</h2>
         <button class="pause-btn" onclick="resumeGame()">▶️ DAVOM ETTIRISH</button>
-        <button class="pause-btn" onclick="restartFight()">🔄 JANGNI QAYTA BOSHLASH</button>
+        <button class="pause-btn" onclick="restartFight()">🔄 QAYTA BOSHLASH</button>
         <button class="pause-btn" onclick="backToMenu()">🏠 BOSH SAHIFA</button>
     </div>
-    
-    <div id="controls">
-        <div class="control-row">
-            <strong>🎮 BOSHQARUV:</strong>
-            <span class="key">W</span> Sakrash
-            <span class="key">S</span> Cho'kish
-            <span class="key">A/D</span> Harakat
-        </div>
-        <div class="control-row">
-            <span class="key">J</span> Musht (5💥)
-            <span class="key">K</span> Tepki (8💥)
-            <span class="key">L</span> Zaхvat (27💥)
-            <span class="key">U</span> Blok 🛡️
-        </div>
+
+    <!-- JOYSTICK -->
+    <div id="joystick-zone">
+        <div id="joystick-base"></div>
+        <div id="joystick-knob"></div>
     </div>
+
+    <!-- ACTION BUTTONS -->
+    <div id="action-btns">
+        <div class="abtn" id="btn-punch">👊<small>Musht</small></div>
+        <div class="abtn" id="btn-kick">🦶<small>Tepki</small></div>
+        <div class="abtn" id="btn-grab">🤜<small>Zahvat</small></div>
+        <div class="abtn" id="btn-block">🛡️<small>Blok</small></div>
+    </div>
+
+    <!-- PAUSE BUTTON -->
+    <div id="pause-btn" onclick="pauseGame()">⏸</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
@@ -313,32 +309,129 @@
         let round = 1;
         let timerCounter = 0;
         const keys = {};
-        
+
+        // ============================================================
+        //  JOYSTICK
+        // ============================================================
+        const joystickZone  = document.getElementById('joystick-zone');
+        const joystickKnob  = document.getElementById('joystick-knob');
+        const BASE_R  = 70;   // joystick base radius
+        const KNOB_R  = 30;   // knob radius
+        const DEAD    = 0.25; // dead zone
+
+        let joyActive   = false;
+        let joyTouchId  = null;
+        let joyOriginX  = 0;
+        let joyOriginY  = 0;
+
+        function joyStart(e) {
+            e.preventDefault();
+            const t = e.changedTouches ? e.changedTouches[0] : e;
+            joyActive  = true;
+            joyTouchId = t.identifier !== undefined ? t.identifier : -1;
+            const rect = joystickZone.getBoundingClientRect();
+            joyOriginX = rect.left + BASE_R;
+            joyOriginY = rect.top  + BASE_R;
+            joyMove(e);
+        }
+
+        function joyMove(e) {
+            if (!joyActive) return;
+            e.preventDefault();
+            let t;
+            if (e.changedTouches) {
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joyTouchId) { t = e.changedTouches[i]; break; }
+                }
+            } else { t = e; }
+            if (!t) return;
+
+            let dx = t.clientX - joyOriginX;
+            let dy = t.clientY - joyOriginY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const maxDist = BASE_R - KNOB_R;
+            if (dist > maxDist) { dx = dx/dist*maxDist; dy = dy/dist*maxDist; }
+
+            joystickKnob.style.left = (BASE_R - KNOB_R + dx) + 'px';
+            joystickKnob.style.top  = (BASE_R - KNOB_R + dy) + 'px';
+
+            const nx = dx / maxDist;
+            const ny = dy / maxDist;
+
+            keys['a'] = nx < -DEAD;
+            keys['d'] = nx >  DEAD;
+            keys['w'] = ny < -DEAD;
+            keys['s'] = ny >  DEAD;
+        }
+
+        function joyEnd(e) {
+            e.preventDefault();
+            joyActive = false;
+            joystickKnob.style.left = KNOB_R + 'px';
+            joystickKnob.style.top  = KNOB_R + 'px';
+            keys['a'] = keys['d'] = keys['w'] = keys['s'] = false;
+        }
+
+        joystickZone.addEventListener('touchstart', joyStart, {passive:false});
+        joystickZone.addEventListener('touchmove',  joyMove,  {passive:false});
+        joystickZone.addEventListener('touchend',   joyEnd,   {passive:false});
+        joystickZone.addEventListener('touchcancel',joyEnd,   {passive:false});
+        // Mouse fallback (PC test)
+        joystickZone.addEventListener('mousedown',  joyStart);
+        window.addEventListener('mousemove', e => { if(joyActive) joyMove(e); });
+        window.addEventListener('mouseup',   e => { if(joyActive) joyEnd(e); });
+
+        // ============================================================
+        //  ACTION BUTTONS
+        // ============================================================
+        const btnMap = {
+            'btn-punch': 'j',
+            'btn-kick':  'k',
+            'btn-grab':  'l',
+            'btn-block': 'u',
+        };
+        Object.entries(btnMap).forEach(([id, key]) => {
+            const el = document.getElementById(id);
+            const press   = e => { e.preventDefault(); keys[key] = true;  el.classList.add('pressed'); };
+            const release = e => { e.preventDefault(); keys[key] = false; el.classList.remove('pressed'); };
+            el.addEventListener('touchstart',  press,   {passive:false});
+            el.addEventListener('touchend',    release, {passive:false});
+            el.addEventListener('touchcancel', release, {passive:false});
+            el.addEventListener('mousedown',   press);
+            el.addEventListener('mouseup',     release);
+            el.addEventListener('mouseleave',  release);
+        });
+
+        // ============================================================
+        //  SHOW / HIDE mobile controls
+        // ============================================================
+        function showMobileControls(show) {
+            const d = show ? 'flex' : 'none';
+            joystickZone.style.display = show ? 'block' : 'none';
+            document.getElementById('action-btns').style.display = d;
+            document.getElementById('pause-btn').style.display   = d;
+        }
+
+        // ============================================================
+        //  GAME FUNCTIONS
+        // ============================================================
         function showInstructions() {
-            alert('🥷 NINJA JANG - QOIDALAR 🥷\n\n' +
-                  '⌨️ BOSHQARUV:\n' +
-                  'W - Sakrash 🦘\n' +
-                  'S - Cho\'kish 🙇\n' +
-                  'A/D - Chapga/O\'ngga harakat 👈👉\n' +
-                  'J - Musht 👊 (5 zarar)\n' +
-                  'K - Tepki 🦶 (8 zarar)\n' +
-                  'L - Zaхvat 🤜🤛 (27 zarar!)\n' +
-                  'U - Blok 🛡️\n\n' +
-                  '🎯 MAQSAD:\n' +
-                  'Botni mag\'lub eting!\n' +
-                  'Zaхvat eng kuchli hujum!\n\n' +
-                  '⏰ 99 soniya ichida g\'olib bo\'ling!');
+            document.getElementById('instructionsModal').classList.add('open');
+        }
+        function closeInstructions() {
+            document.getElementById('instructionsModal').classList.remove('open');
         }
 
         function startGame() {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('ui').style.display = 'flex';
             document.getElementById('timer').style.display = 'block';
-            
+            showMobileControls(true);
+
             gameStarted = true;
             gamePaused = false;
             initThreeJS();
-            
+
             setTimeout(() => {
                 document.getElementById('round-display').style.display = 'block';
                 setTimeout(() => {
@@ -350,14 +443,12 @@
 
         function pauseGame() {
             if (!gameActive || gamePaused) return;
-            gamePaused = true;
-            gameActive = false;
+            gamePaused = true; gameActive = false;
             document.getElementById('pauseMenu').style.display = 'flex';
         }
 
         function resumeGame() {
-            gamePaused = false;
-            gameActive = true;
+            gamePaused = false; gameActive = true;
             document.getElementById('pauseMenu').style.display = 'none';
         }
 
@@ -369,170 +460,105 @@
         }
 
         function backToMenu() {
-            gamePaused = false;
-            gameActive = false;
-            gameStarted = false;
+            gamePaused = false; gameActive = false; gameStarted = false;
             document.getElementById('pauseMenu').style.display = 'none';
             document.getElementById('ui').style.display = 'none';
             document.getElementById('timer').style.display = 'none';
             document.getElementById('mainMenu').style.display = 'flex';
-            
+            showMobileControls(false);
             if (renderer) {
                 document.body.removeChild(renderer.domElement);
                 renderer = null;
             }
-            scene = null;
-            player1 = null;
-            player2 = null;
+            scene = null; player1 = null; player2 = null;
         }
 
+        // ============================================================
+        //  FIGHTER CLASS
+        // ============================================================
         class Fighter3D {
             constructor(x, z, color, isBot = false) {
                 this.color = color;
-                this.health = 100;
-                this.maxHealth = 100;
+                this.health = 100; this.maxHealth = 100;
                 this.isBot = isBot;
-                this.velocity = { x: 0, y: 0, z: 0 };
-                this.isJumping = false;
-                this.isCrouching = false;
-                this.isBlocking = false;
-                this.isGrabbing = false;
-                this.grabTime = 0;
-                this.attackCooldown = 0;
-                this.hitStun = 0;
-                this.botDecisionTimer = 0;
-                this.botAction = null;
-                
-                // Create 3D mesh
+                this.velocity = { x:0, y:0, z:0 };
+                this.isJumping = false; this.isCrouching = false;
+                this.isBlocking = false; this.isGrabbing = false;
+                this.grabTime = 0; this.attackCooldown = 0;
+                this.hitStun = 0; this.botDecisionTimer = 0; this.botAction = null;
+
                 const geometry = new THREE.BoxGeometry(1, 2, 0.5);
-                const material = new THREE.MeshPhongMaterial({ 
-                    color: color,
-                    shininess: 80
-                });
+                const material = new THREE.MeshPhongMaterial({ color, shininess: 80 });
                 this.mesh = new THREE.Mesh(geometry, material);
                 this.mesh.position.set(x, 1, z);
-                this.mesh.castShadow = true;
-                this.mesh.receiveShadow = true;
-                
-                // Head
+                this.mesh.castShadow = true; this.mesh.receiveShadow = true;
+
                 const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
-                const headMat = new THREE.MeshPhongMaterial({ 
-                    color: color,
-                    shininess: 80
-                });
+                const headMat = new THREE.MeshPhongMaterial({ color, shininess: 80 });
                 this.head = new THREE.Mesh(headGeo, headMat);
-                this.head.position.y = 1.4;
-                this.head.castShadow = true;
+                this.head.position.y = 1.4; this.head.castShadow = true;
                 this.mesh.add(this.head);
-                
-                // Eyes
+
                 const eyeGeo = new THREE.SphereGeometry(0.1, 8, 8);
-                const eyeMat = new THREE.MeshBasicMaterial({ 
-                    color: color === 0xffffff ? 0x000000 : 0xff0000 
-                });
-                const eye1 = new THREE.Mesh(eyeGeo, eyeMat);
-                eye1.position.set(-0.15, 1.45, 0.35);
-                this.mesh.add(eye1);
-                const eye2 = new THREE.Mesh(eyeGeo, eyeMat);
-                eye2.position.set(0.15, 1.45, 0.35);
-                this.mesh.add(eye2);
-                
-                // Sword
+                const eyeMat = new THREE.MeshBasicMaterial({ color: color===0xffffff ? 0x000000 : 0xff0000 });
+                const eye1 = new THREE.Mesh(eyeGeo, eyeMat); eye1.position.set(-0.15,1.45,0.35); this.mesh.add(eye1);
+                const eye2 = new THREE.Mesh(eyeGeo, eyeMat); eye2.position.set( 0.15,1.45,0.35); this.mesh.add(eye2);
+
                 const swordGeo = new THREE.BoxGeometry(0.1, 1.5, 0.1);
-                const swordMat = new THREE.MeshPhongMaterial({ 
-                    color: 0x888888,
-                    shininess: 100
-                });
+                const swordMat = new THREE.MeshPhongMaterial({ color:0x888888, shininess:100 });
                 this.sword = new THREE.Mesh(swordGeo, swordMat);
                 this.sword.position.set(0.6, 0.5, 0);
-                this.sword.rotation.z = Math.PI / 4;
+                this.sword.rotation.z = Math.PI/4;
                 this.sword.visible = false;
                 this.mesh.add(this.sword);
-                
+
                 scene.add(this.mesh);
             }
 
             update(opponent) {
-                if (this.isBot) {
-                    this.botAI(opponent);
-                }
+                if (this.isBot) this.botAI(opponent);
 
-                if (this.hitStun > 0) {
-                    this.hitStun--;
-                    return;
-                }
+                if (this.hitStun > 0) { this.hitStun--; return; }
 
                 if (this.attackCooldown > 0) {
                     this.attackCooldown--;
                     this.sword.visible = this.attackCooldown > 10;
-                    this.sword.rotation.z = -Math.PI / 2;
+                    this.sword.rotation.z = -Math.PI/2;
                 }
 
-                // Gravity
                 this.velocity.y -= 0.02;
                 this.mesh.position.y += this.velocity.y;
+                if (this.mesh.position.y <= 1) { this.mesh.position.y = 1; this.velocity.y = 0; this.isJumping = false; }
 
-                if (this.mesh.position.y <= 1) {
-                    this.mesh.position.y = 1;
-                    this.velocity.y = 0;
-                    this.isJumping = false;
-                }
-
-                // Movement
-                this.velocity.x = 0;
-                this.velocity.z = 0;
-                this.isCrouching = false;
-                this.isBlocking = false;
+                this.velocity.x = 0; this.velocity.z = 0;
+                this.isCrouching = false; this.isBlocking = false;
 
                 if (!this.isGrabbing) {
-                    const controls = this.isBot ? 
-                        {left:'arrowleft',right:'arrowright',up:'arrowup',down:'arrowdown',
-                         punch:'1',kick:'2',grab:'3',block:'0'} :
-                        {left:'a',right:'d',up:'w',down:'s',
-                         punch:'j',kick:'k',grab:'l',block:'u'};
+                    const c = this.isBot ?
+                        {left:'arrowleft',right:'arrowright',up:'arrowup',down:'arrowdown',punch:'1',kick:'2',grab:'3',block:'0'} :
+                        {left:'a',right:'d',up:'w',down:'s',punch:'j',kick:'k',grab:'l',block:'u'};
 
-                    if (keys[controls.left]) this.velocity.x = -0.1;
-                    if (keys[controls.right]) this.velocity.x = 0.1;
-                    if (keys[controls.up] && !this.isJumping) {
-                        this.velocity.y = 0.3;
-                        this.isJumping = true;
-                    }
-                    if (keys[controls.down] && !this.isJumping) {
-                        this.isCrouching = true;
-                        this.mesh.scale.y = 0.6;
-                    } else {
-                        this.mesh.scale.y = 1;
-                    }
-                    if (keys[controls.block]) {
-                        this.isBlocking = true;
-                    }
-                    if (keys[controls.punch] && this.attackCooldown === 0) {
-                        this.attack(opponent, 5, 1);
-                    }
-                    if (keys[controls.kick] && this.attackCooldown === 0) {
-                        this.attack(opponent, 8, 1);
-                    }
-                    if (keys[controls.grab] && this.attackCooldown === 0) {
-                        this.grab(opponent);
-                    }
+                    if (keys[c.left])  this.velocity.x = -0.1;
+                    if (keys[c.right]) this.velocity.x =  0.1;
+                    if (keys[c.up] && !this.isJumping) { this.velocity.y = 0.3; this.isJumping = true; }
+                    if (keys[c.down] && !this.isJumping) {
+                        this.isCrouching = true; this.mesh.scale.y = 0.6;
+                    } else { this.mesh.scale.y = 1; }
+                    if (keys[c.block]) this.isBlocking = true;
+                    if (keys[c.punch] && this.attackCooldown === 0) this.attack(opponent, 5, 1);
+                    if (keys[c.kick]  && this.attackCooldown === 0) this.attack(opponent, 8, 1);
+                    if (keys[c.grab]  && this.attackCooldown === 0) this.grab(opponent);
                 }
 
                 this.mesh.position.x += this.velocity.x;
-                this.mesh.position.z += this.velocity.z;
-
-                // Boundaries
                 this.mesh.position.x = Math.max(-10, Math.min(10, this.mesh.position.x));
 
-                // Face opponent
                 const dx = opponent.mesh.position.x - this.mesh.position.x;
                 this.mesh.rotation.y = dx > 0 ? 0 : Math.PI;
 
-                // Grab damage
                 if (this.isGrabbing && this.grabTime > 0) {
                     this.grabTime--;
-                    if (this.grabTime % 10 === 0) {
-                        opponent.takeDamage(3);
-                    }
+                    if (this.grabTime % 10 === 0) opponent.takeDamage(3);
                     if (this.grabTime === 0) {
                         this.isGrabbing = false;
                         opponent.hitStun = 30;
@@ -542,14 +568,12 @@
                     }
                 }
 
-                // Visual effects
                 if (this.isBlocking) {
                     this.mesh.material.emissive = new THREE.Color(0x00ff00);
                     this.mesh.material.emissiveIntensity = 0.3;
                 } else {
                     this.mesh.material.emissive = new THREE.Color(0x000000);
                 }
-
                 if (this.isGrabbing) {
                     this.mesh.material.emissive = new THREE.Color(0xff0000);
                     this.mesh.material.emissiveIntensity = 0.5;
@@ -558,56 +582,35 @@
 
             botAI(opponent) {
                 this.botDecisionTimer--;
-                
                 if (this.botDecisionTimer <= 0) {
                     const dist = Math.abs(this.mesh.position.x - opponent.mesh.position.x);
                     const rand = Math.random();
-                    
-                    if (dist > 3.5) {
-                        this.botAction = 'approach';
-                        this.botDecisionTimer = 35;
-                    } else if (dist < 1.8) {
-                        if (rand < 0.25) this.botAction = 'grab';
-                        else if (rand < 0.55) this.botAction = 'punch';
+                    if (dist > 3.5) { this.botAction = 'approach'; this.botDecisionTimer = 35; }
+                    else if (dist < 1.8) {
+                        if (rand<0.25) this.botAction = 'grab';
+                        else if (rand<0.55) this.botAction = 'punch';
                         else this.botAction = 'kick';
                         this.botDecisionTimer = 50;
                     } else {
-                        if (rand < 0.35) this.botAction = 'kick';
-                        else if (rand < 0.65) this.botAction = 'approach';
+                        if (rand<0.35) this.botAction = 'kick';
+                        else if (rand<0.65) this.botAction = 'approach';
                         else this.botAction = 'block';
                         this.botDecisionTimer = 40;
                     }
                 }
+                if (opponent.attackCooldown > 0 && Math.random() < 0.5) this.botAction = 'block';
 
-                if (opponent.attackCooldown > 0 && Math.random() < 0.5) {
-                    this.botAction = 'block';
-                }
-
-                const controls = {left:'arrowleft',right:'arrowright',up:'arrowup',
-                                 punch:'1',kick:'2',grab:'3',block:'0'};
-
-                Object.keys(controls).forEach(k => keys[controls[k]] = false);
-
+                const c = {left:'arrowleft',right:'arrowright',punch:'1',kick:'2',grab:'3',block:'0'};
+                Object.values(c).forEach(k => keys[k] = false);
                 switch(this.botAction) {
                     case 'approach':
-                        if (opponent.mesh.position.x > this.mesh.position.x) keys[controls.right] = true;
-                        else keys[controls.left] = true;
+                        if (opponent.mesh.position.x > this.mesh.position.x) keys[c.right] = true;
+                        else keys[c.left] = true;
                         break;
-                    case 'punch':
-                        keys[controls.punch] = true;
-                        setTimeout(() => keys[controls.punch] = false, 100);
-                        break;
-                    case 'kick':
-                        keys[controls.kick] = true;
-                        setTimeout(() => keys[controls.kick] = false, 100);
-                        break;
-                    case 'grab':
-                        keys[controls.grab] = true;
-                        setTimeout(() => keys[controls.grab] = false, 100);
-                        break;
-                    case 'block':
-                        keys[controls.block] = true;
-                        break;
+                    case 'punch': keys[c.punch]=true; setTimeout(()=>keys[c.punch]=false,100); break;
+                    case 'kick':  keys[c.kick] =true; setTimeout(()=>keys[c.kick] =false,100); break;
+                    case 'grab':  keys[c.grab] =true; setTimeout(()=>keys[c.grab] =false,100); break;
+                    case 'block': keys[c.block]=true; break;
                 }
             }
 
@@ -628,26 +631,25 @@
             grab(opponent) {
                 const dist = Math.abs(this.mesh.position.x - opponent.mesh.position.x);
                 if (dist < 1.8 && !opponent.isBlocking && !opponent.isGrabbing) {
-                    this.isGrabbing = true;
-                    this.grabTime = 90;
+                    this.isGrabbing = true; this.grabTime = 90;
                     opponent.hitStun = 90;
                 }
             }
 
             takeDamage(amount) {
-                if (!this.isBlocking) {
-                    this.health = Math.max(0, this.health - amount);
-                }
+                if (!this.isBlocking) this.health = Math.max(0, this.health - amount);
             }
         }
 
+        // ============================================================
+        //  THREE.JS INIT
+        // ============================================================
         function initThreeJS() {
             scene = new THREE.Scene();
             scene.fog = new THREE.Fog(0x1a3a52, 10, 50);
 
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 4, 12);
-            camera.lookAt(0, 0, 0);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 4, 12); camera.lookAt(0, 0, 0);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -655,16 +657,13 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             document.body.appendChild(renderer.domElement);
 
-            // Background with ninja city
             const bgTexture = new THREE.TextureLoader().load(
-                'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1000" viewBox="0 0 2000 1000">
-                    <defs>
-                        <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#0a1a2a;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#1a3a52;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#0a1a2a;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
+                'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1000">
+                    <defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#0a1a2a"/>
+                        <stop offset="50%" style="stop-color:#1a3a52"/>
+                        <stop offset="100%" style="stop-color:#0a1a2a"/>
+                    </linearGradient></defs>
                     <rect width="2000" height="1000" fill="url(#sky)"/>
                     <g opacity="0.4">
                         <polygon points="100,400 200,300 250,350 220,500" fill="#0d2535"/>
@@ -677,56 +676,26 @@
                         <polygon points="1500,365 1600,265 1650,315 1620,492" fill="#0a1f30"/>
                         <polygon points="1700,395 1800,295 1850,345 1820,500" fill="#0d2535"/>
                     </g>
-                    <g opacity="0.3">
-                        <rect x="150" y="420" width="8" height="15" fill="#ff6600"/>
-                        <rect x="380" y="380" width="8" height="15" fill="#ff6600"/>
-                        <rect x="580" y="410" width="8" height="15" fill="#ff6600"/>
-                        <rect x="780" y="390" width="8" height="15" fill="#ff6600"/>
-                        <rect x="980" y="415" width="8" height="15" fill="#ff6600"/>
-                        <rect x="1180" y="395" width="8" height="15" fill="#ff6600"/>
-                        <rect x="1380" y="408" width="8" height="15" fill="#ff6600"/>
-                        <rect x="1580" y="388" width="8" height="15" fill="#ff6600"/>
-                        <rect x="1780" y="418" width="8" height="15" fill="#ff6600"/>
-                    </g>
                 </svg>`)
             );
             scene.background = bgTexture;
 
-            // Lights
-            const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
-            scene.add(ambientLight);
-
+            scene.add(new THREE.AmbientLight(0x404040, 1.5));
             const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(10, 20, 10);
-            dirLight.castShadow = true;
-            dirLight.shadow.camera.left = -20;
-            dirLight.shadow.camera.right = 20;
-            dirLight.shadow.camera.top = 20;
-            dirLight.shadow.camera.bottom = -20;
+            dirLight.position.set(10,20,10); dirLight.castShadow = true;
             scene.add(dirLight);
+            const pt = new THREE.PointLight(0xff6600, 1, 50);
+            pt.position.set(0,5,0); scene.add(pt);
 
-            const pointLight = new THREE.PointLight(0xff6600, 1, 50);
-            pointLight.position.set(0, 5, 0);
-            scene.add(pointLight);
-
-            // Ground
             const groundGeo = new THREE.BoxGeometry(25, 0.5, 10);
-            const groundMat = new THREE.MeshPhongMaterial({ 
-                color: 0x2a2a2a,
-                shininess: 60
-            });
+            const groundMat = new THREE.MeshPhongMaterial({ color:0x2a2a2a, shininess:60 });
             ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.position.y = -0.25;
-            ground.receiveShadow = true;
+            ground.position.y = -0.25; ground.receiveShadow = true;
             scene.add(ground);
+            scene.add(new THREE.GridHelper(25, 25, 0x444444, 0x222222));
 
-            // Grid
-            const gridHelper = new THREE.GridHelper(25, 25, 0x444444, 0x222222);
-            scene.add(gridHelper);
-
-            // Create fighters
             player1 = new Fighter3D(-5, 0, 0xffffff, false);
-            player2 = new Fighter3D(5, 0, 0x222222, true);
+            player2 = new Fighter3D( 5, 0, 0x222222, true);
 
             animate();
         }
@@ -734,30 +703,22 @@
         function animate() {
             if (!gameStarted) return;
             requestAnimationFrame(animate);
-
             if (gameActive) {
                 player1.update(player2);
                 player2.update(player1);
-
                 timerCounter++;
-                if (timerCounter >= 60) {
-                    timer--;
-                    timerCounter = 0;
-                }
-
+                if (timerCounter >= 60) { timer--; timerCounter = 0; }
                 checkWin();
             }
-
             updateUI();
             renderer.render(scene, camera);
         }
 
         function updateUI() {
-            const h1 = (player1.health / player1.maxHealth) * 100;
-            const h2 = (player2.health / player2.maxHealth) * 100;
-            
-            document.getElementById('health1').style.width = h1 + '%';
-            document.getElementById('health2').style.width = h2 + '%';
+            const h1 = (player1.health/player1.maxHealth)*100;
+            const h2 = (player2.health/player2.maxHealth)*100;
+            document.getElementById('health1').style.width = h1+'%';
+            document.getElementById('health2').style.width = h2+'%';
             document.getElementById('healthText1').textContent = Math.ceil(player1.health);
             document.getElementById('healthText2').textContent = Math.ceil(player2.health);
             document.getElementById('timer').textContent = timer;
@@ -768,50 +729,31 @@
                 gameActive = false;
                 let winner = player1.health > player2.health ? '🏆 SIZ G\'OLIBSIZ! 🏆' : '💀 BOT G\'OLIB BO\'LDI! 💀';
                 if (player1.health === player2.health) winner = '🤝 DURANG! 🤝';
-                
                 const display = document.getElementById('round-display');
-                display.textContent = winner;
-                display.style.display = 'block';
-                
-                setTimeout(() => {
-                    display.style.display = 'none';
-                    resetRound();
-                }, 3000);
+                display.textContent = winner; display.style.display = 'block';
+                setTimeout(() => { display.style.display = 'none'; resetRound(); }, 3000);
             }
         }
 
         function resetRound() {
-            player1.health = 100;
-            player2.health = 100;
+            player1.health = 100; player2.health = 100;
             player1.mesh.position.set(-5, 1, 0);
-            player2.mesh.position.set(5, 1, 0);
-            timer = 99;
-            round++;
+            player2.mesh.position.set( 5, 1, 0);
+            timer = 99; round++;
             gameActive = true;
-            
             const display = document.getElementById('round-display');
-            display.textContent = 'ROUND ' + round;
-            display.style.display = 'block';
+            display.textContent = 'ROUND ' + round; display.style.display = 'block';
             setTimeout(() => display.style.display = 'none', 2000);
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'escape') {
-                if (!gamePaused && gameActive) {
-                    pauseGame();
-                }
-                return;
-            }
+        window.addEventListener('keydown', e => {
+            if (e.key.toLowerCase() === 'escape') { if (!gamePaused && gameActive) pauseGame(); return; }
             keys[e.key.toLowerCase()] = true;
         });
-
-        window.addEventListener('keyup', (e) => {
-            keys[e.key.toLowerCase()] = false;
-        });
-
+        window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
         window.addEventListener('resize', () => {
-            if (gameStarted) {
-                camera.aspect = window.innerWidth / window.innerHeight;
+            if (gameStarted && renderer) {
+                camera.aspect = window.innerWidth/window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
